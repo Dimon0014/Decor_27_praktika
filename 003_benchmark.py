@@ -18,6 +18,9 @@ def benchmark(func):
 @benchmark
 def vremja_vypolnenia():
     print "Привет"
-
+@benchmark
+def vremja_vypolnenia2(x):
+    print "Привет" + str(x)
 
 vremja_vypolnenia()
+vremja_vypolnenia2(100)
