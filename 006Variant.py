@@ -8,9 +8,9 @@ def benchmark(func):
     выполнение декорируемой функции.
     """
     import time
-    def wrapper(*args, **kwargs):
+    def wrapper(string):
         t = time.clock()
-        res = func(*args, **kwargs)
+        res = func(string)
         print func.__name__, time.clock() - t
         return res
 
@@ -23,13 +23,9 @@ def logging(func):
     (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
     """
 
-    def wrapper(*args, **kwargs):
-        res = func(*args, **kwargs)
-        if type(args[0])== str:
-         a=''.join(args)  # tuple to string --кортеж в строку
-         b=a.decode('utf8')
-         print func.__name__, b, kwargs, "логгер1"
-        else: func.__name__, args, kwargs, "логгер2"
+    def wrapper(string):
+        res = func(string)
+        print func.__name__, string
         return res
 
     return wrapper
@@ -41,9 +37,9 @@ def counter(func):
     декорируемой функции.
     """
 
-    def wrapper(*args, **kwargs):
+    def wrapper(string):
         wrapper.count += 1
-        res = func(*args, **kwargs)
+        res = func(string)
         print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
         return res
 
@@ -51,13 +47,17 @@ def counter(func):
     return wrapper
 
 
-@benchmark  # этот декоратор выведен №3
-@logging  # этот декоратор выведен №2
-@counter # этот декоратор выведен №1
-def reverse_string(string):  # функция выведена последней №4
-    test = string.decode('utf8')
-    a = ''.join(reversed(test))
-    return a
+@benchmark
+@logging
+@counter
+def reverse_string(string):
+    test=string.decode('utf8')
+    n = len(test)
+    x = ""
+    for i in range(n - 1, -1, -1):
+        x += test[i]
+    return x
+
 
 
 
