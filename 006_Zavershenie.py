@@ -1,6 +1,7 @@
 # coding=utf-8
-from pip._vendor.six import python_2_unicode_compatible
 
+
+import functools
 
 def benchmark(func):
     """
@@ -8,13 +9,14 @@ def benchmark(func):
     выполнение декорируемой функции.
     """
     import time
-    def wrapper(*args, **kwargs):
+    @functools.wraps(func)
+    def wrapper1(*args, **kwargs):
         t = time.clock()
         res = func(*args, **kwargs)
-        print func.__name__, time.clock() - t
+        print func.__name__, time.clock() - t, "_дек1"
         return res
 
-    return wrapper
+    return wrapper1 # по ходу я декорирую wrapper2, поэтому он мне всякую хрень выводит
 
 
 def logging(func):
@@ -23,16 +25,17 @@ def logging(func):
     (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
     """
 
-    def wrapper(*args, **kwargs):
+    @functools.wraps(func)
+    def wrapper2(*args, **kwargs):
         res = func(*args, **kwargs)
         if type(args[0])== str:
-         a=''.join(args)  # tuple to string --кортеж в строку
-         b=a.decode('utf8')
-         print func.__name__, b, kwargs, "логгер1"
-        else: func.__name__, args, kwargs, "логгер2"
+          a=''.join(args)  # tuple to string --кортеж в строку
+          b=a.decode('utf8')
+          print  func.__name__, b, kwargs, "логгер_дек2","{0} была вызвана: ".format(func.__name__)
+        else: print func.__name__, args, kwargs, "логгер2"
         return res
 
-    return wrapper
+    return wrapper2
 
 
 def counter(func):
@@ -41,14 +44,15 @@ def counter(func):
     декорируемой функции.
     """
 
-    def wrapper(*args, **kwargs):
-        wrapper.count += 1
+    @functools.wraps(func)  # они как-то передаются друг другу в общем эти декораторы с их функцией "wrapper"
+    def wrapper3(*args, **kwargs):
+        wrapper3.count += 1
         res = func(*args, **kwargs)
-        print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
+        print "{0} была вызвана: {1}x_дек3".format(func.__name__, wrapper3.count)
         return res
 
-    wrapper.count = 0
-    return wrapper
+    wrapper3.count = 0
+    return wrapper3
 
 
 @benchmark  # этот декоратор выведен №3
@@ -64,7 +68,7 @@ def reverse_string(string):  # функция выведена последне�
 print reverse_string('А роза упала на лапу Азора')
 print reverse_string(
     "A man, a plan, a canoe, pasta, heros, rajahs, a coloratura, maps, snipe, percale, macaroni, a gag, a banana bag, a tan, a tag, a banana bag again (or a camel), a crepe, pins, Spam, a rut, a Rolo, cash, a jar, sore hats, a peon, a canal: Panama!")
-
+print reverse_string.__name__
 # выведет:
 # reverse_string ('А роза упала на лапу Азора',) {}
 # wrapper 0.0 --это типа время работы функции

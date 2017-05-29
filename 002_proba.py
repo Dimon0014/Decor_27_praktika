@@ -34,9 +34,10 @@ def bar_dec002(func):
     # Объявляем "wrapper" оборачивающим "func"
     # и запускаем магию:
     @functools.wraps(func) # что здесь происходит непонятно, то есть мы декорируем "wrapper"
-    def wrapper():         # "wrapper" после этого будет запускаться с дополнительным функционалом
-        print "bar_dec002" # после чего будет трассировщику выдавать имя декорируемой функции
-        return func()      # как в общем то и положено
+    def wrapper(*args, **kwargs):         # "wrapper" после этого будет запускаться с дополнительным функционалом
+        res = func(*args, **kwargs)
+        print func.__name__ , "bar_dec002" # после чего будет трассировщику выдавать имя декорируемой функции
+        return res      # как в общем то и положено
 
     return wrapper
 
@@ -45,6 +46,7 @@ def bar_dec002(func):
 def foo03():
     print "foo003"
 
+foo03()
 
 print foo03.__name__
 # выведет: foo03
