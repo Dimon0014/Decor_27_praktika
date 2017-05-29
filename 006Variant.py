@@ -8,13 +8,13 @@ def benchmark(func):
     выполнение декорируемой функции.
     """
     import time
-    def wrapper(string):
+    def wrapper1(string):
         t = time.clock()
         res = func(string)
         print func.__name__, time.clock() - t
         return res
 
-    return wrapper
+    return wrapper1
 
 
 def logging(func):
@@ -23,12 +23,12 @@ def logging(func):
     (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
     """
 
-    def wrapper(string):
+    def wrapper2(string):
         res = func(string)
         print func.__name__, string
         return res
 
-    return wrapper
+    return wrapper2
 
 
 def counter(func):
@@ -37,14 +37,14 @@ def counter(func):
     декорируемой функции.
     """
 
-    def wrapper(string):
-        wrapper.count += 1
+    def wrapper3(string):
+        wrapper3.count += 1
         res = func(string)
-        print "{0} была вызвана: {1}x".format(func.__name__, wrapper.count)
+        print "{0} была вызвана: {1}x".format(func.__name__, wrapper3.count)
         return res
 
-    wrapper.count = 0
-    return wrapper
+    wrapper3.count = 0
+    return wrapper3
 
 
 @benchmark
@@ -64,7 +64,7 @@ def reverse_string(string):
 print reverse_string('А роза упала на лапу Азора')
 print reverse_string(
     "A man, a plan, a canoe, pasta, heros, rajahs, a coloratura, maps, snipe, percale, macaroni, a gag, a banana bag, a tan, a tag, a banana bag again (or a camel), a crepe, pins, Spam, a rut, a Rolo, cash, a jar, sore hats, a peon, a canal: Panama!")
-
+print reverse_string.__name__
 # выведет:
 # reverse_string ('А роза упала на лапу Азора',) {}
 # wrapper 0.0 --это типа время работы функции
